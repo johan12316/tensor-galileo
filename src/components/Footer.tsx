@@ -184,12 +184,12 @@ export default function Footer() {
             {/* Social icon pills */}
             <div className="footer-socials">
               <a
-                href="mailto:lumefxpresets@gmail.com"
+                href="mailto:hello@lumefxpresets.store"
                 className="footer-icon-link gmail"
-                title="lumefxpresets@gmail.com"
+                title="hello@lumefxpresets.store"
               >
                 <GmailIcon />
-                lumefxpresets@gmail.com
+                hello@lumefxpresets.store
               </a>
 
               <a
@@ -217,14 +217,19 @@ export default function Footer() {
 
             {/* Policy links */}
             <div className="footer-doc-links">
-              <a href="#" className="footer-doc-link">
+              <a href="/terms-and-conditions" className="footer-doc-link">
                 <DocumentIcon />
                 Terms &amp; Conditions
               </a>
               <span className="footer-divider" aria-hidden="true" />
-              <a href="#" className="footer-doc-link">
+              <a href="/privacy-policy" className="footer-doc-link">
                 <DocumentIcon />
                 Privacy Policy
+              </a>
+              <span className="footer-divider" aria-hidden="true" />
+              <a href="/refund-policy" className="footer-doc-link">
+                <DocumentIcon />
+                Refund Policy
               </a>
             </div>
 

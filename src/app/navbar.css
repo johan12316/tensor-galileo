@@ -36,6 +36,7 @@
 }
 
 .logo-img {
+    height: auto;
     border-radius: 4px;
     transition: transform 0.2s ease, filter 0.2s ease;
     cursor: pointer;
@@ -45,6 +46,7 @@
 .logo-img:hover {
     transform: rotate(-3deg) scale(1.02);
 }
+
 
 .navbar-links {
     display: flex;
@@ -149,7 +151,11 @@
 
 @media (max-width: 768px) {
     .navbar-wrapper {
-        padding: 1.5rem 0;
+        padding: 1rem 0;
+    }
+
+    .navbar-logo .logo-img {
+        width: 48px;
     }
 
     .desktop-only {
@@ -201,7 +207,7 @@
         border-radius: 12px;
         padding: 0.75rem 1rem;
     }
-    
+
     .navbar-floating-pill.menu-open {
         background: rgba(17, 17, 17, 0.9);
     }

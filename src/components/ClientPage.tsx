@@ -14,13 +14,14 @@ const PresetsShowcase = dynamic(() => import('@/components/PresetsShowcase'), { 
 const LutsShowcase = dynamic(() => import('@/components/LutsShowcase'), { ssr: false });
 const SfxShowcase = dynamic(() => import('@/components/SfxShowcase'), { ssr: false });
 const FontsShowcase = dynamic(() => import('@/components/FontsShowcase'), { ssr: false });
-const UltimateBundleSection = dynamic(() => import('@/components/UltimateBundleSection'), { ssr: false });
+const UltimateToolkitSection = dynamic(() => import('@/components/UltimateToolkitSection'), { ssr: false });
 const CreatorBenefits = dynamic(() => import('@/components/CreatorBenefits'), { ssr: false });
 const TestimonialSection = dynamic(() => import('@/components/TestimonialSection'), { ssr: false });
 const NewPricingSection = dynamic(() => import('@/components/NewPricingSection'), { ssr: false });
 const FaqSection = dynamic(() => import('@/components/FaqSection'), { ssr: false });
 const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
 const CheckoutModal = dynamic(() => import('@/components/CheckoutModal'), { ssr: false });
+const MobileStickyCTA = dynamic(() => import('@/components/MobileStickyCTA'), { ssr: false });
 
 export default function ClientPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,15 +54,6 @@ export default function ClientPage() {
 
   const handleCloseCheckout = () => setIsModalOpen(false);
 
-  const loadRazorpay = () =>
-    new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-
   const handleContinueCheckout = async (formData: {
     name: string;
     email: string;
@@ -69,9 +61,10 @@ export default function ClientPage() {
     state: string;
   }) => {
     handleCloseCheckout();
-    const res = await loadRazorpay();
-    if (!res) {
-      alert('Razorpay load failed. Are you online?');
+    
+    // Check if Razorpay is loaded (preloaded in layout.tsx)
+    if (typeof window === 'undefined' || !(window as any).Razorpay) {
+      alert('Payment system is still loading. Please wait a moment and try again.');
       return;
     }
 
@@ -82,7 +75,7 @@ export default function ClientPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          product_id: '5ba7f5f0-b8b0-48eb-876d-8d6ee0aadc99' // Complete Creator Bundle
+          product_id: '5ba7f5f0-b8b0-48eb-876d-8d6ee0aadc99' // Complete Creator Toolkit
         }),
       });
       const orderData = await orderRes.json();
@@ -99,7 +92,7 @@ export default function ClientPage() {
           (window as any).fbq('track', 'Purchase', {
             value: 0,
             currency: 'INR',
-            content_name: 'Lumefx Creator Bundle'
+            content_name: 'Lumefx Creator Toolkit'
           });
         }
         window.location.href = '/success';
@@ -112,7 +105,7 @@ export default function ClientPage() {
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'Lumefx',
-        description: 'Lumefx Creator Bundle',
+        description: 'Lumefx Creator Toolkit',
         order_id: orderData.order_id,
         handler: async function (response: {
           razorpay_payment_id: string;
@@ -135,7 +128,7 @@ export default function ClientPage() {
               (window as any).fbq('track', 'Purchase', {
                 value: orderData.amount / 100, // Razorpay amount is in paise
                 currency: orderData.currency,
-                content_name: 'Lumefx Creator Bundle'
+                content_name: 'Lumefx Creator Toolkit'
               });
             }
             window.location.href = '/success';
@@ -156,10 +149,32 @@ export default function ClientPage() {
     }
   };
 
+  const scrollToSection = (id: string) => {
+    if (id === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    } else if (!belowFoldVisible) {
+      // If element doesn't exist yet but it's because of lazy loading
+      setBelowFoldVisible(true);
+      // Wait for React to render the newly enabled sections
+      setTimeout(() => {
+        const newElement = document.getElementById(id);
+        if (newElement) {
+          newElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
+
   return (
     <main>
       <LandingAudio />
-      <Navbar />
+      <Navbar scrollToSection={scrollToSection} />
       <Hero />
 
       {/* Sentinel triggers loading of everything below the fold */}
@@ -172,7 +187,7 @@ export default function ClientPage() {
           <LutsShowcase />
           <SfxShowcase />
           <FontsShowcase />
-          <UltimateBundleSection />
+          <UltimateToolkitSection />
           <CreatorBenefits />
           <TestimonialSection />
           <NewPricingSection onCheckout={handleOpenCheckout} />
@@ -205,14 +220,14 @@ export default function ClientPage() {
               maxWidth: '520px',
               lineHeight: 1.6,
             }}>
-              Upgrade your editing workflow with Lumefx Creator Bundle.
+              Upgrade your editing workflow with Lumefx Creator Toolkit.
             </p>
             <button
               onClick={handleOpenCheckout}
               className="btn-primary"
               style={{ padding: '1rem 3rem', fontSize: '1.05rem' }}
             >
-              Get Lumefx Creator Bundle
+              Get Lumefx Creator Toolkit
             </button>
             <p style={{
               color: 'var(--muted-foreground)',
@@ -228,6 +243,7 @@ export default function ClientPage() {
             onClose={handleCloseCheckout}
             onContinue={handleContinueCheckout}
           />
+          <MobileStickyCTA hide={isModalOpen} />
         </>
       )}
     </main>

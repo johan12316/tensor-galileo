@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import Image from 'next/image';
-import AdminEditableAsset from '@/components/AdminEditableAsset';
 
 export default function Hero() {
     useScrollReveal();
@@ -20,7 +19,7 @@ export default function Hero() {
     };
 
     return (
-        <section className="hero-section">
+        <section id="home" className="hero-section">
             <div className="hero-background-glow"></div>
             <div className="container hero-container">
                 <div className="hero-content">
@@ -35,10 +34,10 @@ export default function Hero() {
                     </p>
                     <div className="hero-cta-wrapper reveal reveal-delay-300">
                         <button className="btn-primary btn-hero-cta" onClick={() => document.getElementById('pricing')?.scrollIntoView()}>
-                            Get Lumefx Creator Bundle
+                            Get Lumefx Creator Toolkit
                         </button>
                         <span className="hero-guarantee mt-4 block text-sm font-medium tracking-widest uppercase opacity-80" style={{ color: "var(--muted-foreground)" }}>
-                            Instant Download • Lifetime Access • 64GB Creator Bundle
+                            Instant Download • Lifetime Access • 64GB Creator Toolkit
                         </span>
 
                         <div className="hero-trust reveal reveal-delay-400">
@@ -56,19 +55,18 @@ export default function Hero() {
 
                 <div className="hero-visual reveal reveal-delay-400">
                     <div className="hero-video-placeholder" onClick={handleTogglePlay}>
-                        <AdminEditableAsset exactPath="/videos/cinematic.mp4">
-                            <video
-                                ref={videoRef}
-                                src="/videos/cinematic.mp4"
-                                loop
-                                muted
-                                playsInline
-                                className="w-full h-full object-contain"
-                                style={{ position: 'absolute', top: 0, left: 0 }}
-                                onPlay={() => setIsPlaying(true)}
-                                onPause={() => setIsPlaying(false)}
-                            />
-                        </AdminEditableAsset>
+                        <video
+                            ref={videoRef}
+                            src="/videos/cinematic.mp4"
+                            loop
+                            muted
+                            playsInline
+                            preload="metadata"
+                            className="w-full h-full object-cover"
+                            style={{ position: 'absolute', top: 0, left: 0 }}
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                        />
                         {!isPlaying && (
                             <div className="hero-video-overlay-items">
                                 <div className="play-button-overlay">
